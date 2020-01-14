@@ -15,6 +15,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
+        self.count = 0
 
 
     def _hash(self, key):
@@ -51,9 +52,15 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
-
+        if self.count >= self.capacity:
+            self.resize()
+        
+        index = self._hash_mod(key)
+        if self.storage[index] is not None:
+            # Handle Collision
+            pass
+        self.storage[index] = value
+        self.count += 1
 
     def remove(self, key):
         '''
@@ -63,7 +70,12 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        value = self.storage[index]
+        if value is None:
+            print('Error')
+        self.storage[index] = None
+        self.count -= 1
 
 
     def retrieve(self, key):
@@ -74,7 +86,9 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        if self.storage[self._hash_mod(key)] is not None:
+            return self.storage[self._hash_mod(key)]
+        return None
 
 
     def resize(self):
@@ -84,7 +98,11 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        self.capacity *= 2
+        new_storage = [None] * self.capacity
+        for i in range(self.count):
+            new_storage[i] = self.storage[i]
+        self.storage = new_storage
 
 
 
